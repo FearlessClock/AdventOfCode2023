@@ -10,7 +10,7 @@ namespace AdventOfCode
         {
             int currentDay = 8;
 
-            string filename = string.Format("E:\\Projects\\AdventOfCode\\2023\\AdventOfCode\\day{0}.txt", currentDay);
+            string filename = string.Format("C://Projcts//Advent//AdventOfCode2023//day{0}.txt", currentDay);
             string text = System.IO.File.ReadAllText(filename);
             string[] inputs = text.Split("\r\n");
 
@@ -39,6 +39,8 @@ namespace AdventOfCode
                     return new Day7();
                 case 8:
                     return new Day8();
+                case 9:
+                    return new Day9();
             }
             return null;
         }

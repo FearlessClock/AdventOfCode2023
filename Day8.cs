@@ -74,7 +74,7 @@ namespace AdventOfCode
             {
                 stepsToReachAZ[i] = new List<long>();
             }
-            while (stepCounter < long.MaxValue)
+            while (stepCounter < 14189111)
             {
                 for (int i = 0; i < startingNodes.Count; i++)
                 {
@@ -98,6 +98,7 @@ namespace AdventOfCode
                 {
                     if (nextNodes[i].nodeName[2] == 'Z')
                     {
+                        //Console.WriteLine(nextNodes[i].nodeName + " " + stepCounter);
                         stepsToReachAZ[i].Add(stepCounter);
                     }
                 }
@@ -106,14 +107,62 @@ namespace AdventOfCode
                 nextNodes = new Node[startingNodes.Count];
             }
 
+            long[] stepCounts = new long[6];
+            for (int index = 0; index < stepsToReachAZ.Length; index++)
+            {
+                long[] reducedSteps = new long[stepsToReachAZ[index].Count];
+                for (int i = 0; i < stepsToReachAZ[index].Count-1; i++)
+                {
+                    reducedSteps[i] = stepsToReachAZ[index][i+1] - stepsToReachAZ[index][i];
+                    Console.WriteLine(reducedSteps[i]);
+                }
+                stepCounts[index] = reducedSteps[0];
+            }
+            
+            long lcm = LeastCommonMultiplier(stepCounts[1], stepCounts[0]);
+            long lcm1 = LeastCommonMultiplier(stepCounts[4], stepCounts[3]);
+            long lcm2 = LeastCommonMultiplier(stepCounts[2], stepCounts[5]);
+            long lcm4 = LeastCommonMultiplier(lcm, lcm1);
+            long lcm5 = LeastCommonMultiplier(lcm4, lcm2);
 
-            long[] result = stepsToReachAZ[0].ToArray().Intersect(stepsToReachAZ[1].ToArray()).ToArray();
-            long[] result1 = result.ToArray().Intersect(stepsToReachAZ[2].ToArray()).ToArray();
-            long[] result2 = result1.ToArray().Intersect(stepsToReachAZ[3].ToArray()).ToArray();
-            long[] result3 = result2.ToArray().Intersect(stepsToReachAZ[4].ToArray()).ToArray();
-            long[] result4 = result3.ToArray().Intersect(stepsToReachAZ[5].ToArray()).ToArray();
+            return lcm5.ToString();
+        }
 
-            return result4[0].ToString();
+        private bool AllSame(long[] calculatedSteps)
+        {
+            bool allSame = true;
+            for (int i = 0; i < calculatedSteps.Length-1; i++)
+            {
+                if(calculatedSteps[i] != calculatedSteps[i+1]){
+                    allSame = false;
+                    break;
+                }
+            }
+            return allSame;
+        }
+
+        private long LeastCommonMultiplier(long a, long b)
+        {
+            long absNumber1 = Math.Abs(a);
+            long absNumber2 = Math.Abs(b);
+            long absHigherNumber = Math.Max(absNumber1, absNumber2);
+            long absLowerNumber = Math.Min(absNumber1, absNumber2);
+            long lcm = absHigherNumber;
+            while (lcm % absLowerNumber != 0) {
+                lcm += absHigherNumber;
+            }
+            return lcm;
+        }
+
+        private long GreatestCommonDivisor(long a, long b)
+        {
+            while(b != 0)
+            {
+                long t = b;
+                b = a%b;
+                a = t;
+            }
+            return a;
         }
 
         private bool IsAtEnd(List<Node> nodes)
